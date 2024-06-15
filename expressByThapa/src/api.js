@@ -1,0 +1,60 @@
+// in express js if we want to add dynamic data so we use template engine like pug, ejs and handlebars and for this we use view engine
+// if i want to run nodemon again even if i change the hbs file so we run nodemon like this in outer folder: nodemon src/partials.js -e js,hbs
+const express = require('express')
+const path = require("path")
+const hbs = require("hbs")
+const requests = require("requests")
+
+const app = express()
+const staticpath = path.join(__dirname, "../public")
+
+const templatepath = path.join(__dirname, "../templates/views")
+const partialspath = path.join(__dirname, "../templates/partials")
+app.set('view engine', "hbs");
+
+// if we want to change the name of views directory to the other name then we have to set name by above code
+app.set("views", templatepath)
+hbs.registerPartials(partialspath)
+app.use(express.static(staticpath))
+
+app.get("/", (req, res) => {
+    res.render("index", {
+        content: "this is content"
+    })
+})
+app.get("/", (req, res) => {
+    res.send("hello this is home page")
+})
+app.get("/about", (req, res) => {
+    // console.log(req.query);
+    requests(`https://api.openweathermap.org/data/2.5/weather?q=${req.query.name}&units=metric&appid=846f6527e982ac07bded68d54e17a2e8`)
+        .on('data', function (chunk) {
+            const obj = JSON.parse(chunk)
+            const arr = [obj]
+            // console.log(chunk)
+            // console.log(obj);
+            console.log(`cityname is ${arr[0].name} and temperature is ${arr[0].main.temp}`);
+            // console.log(realtimedata);
+            res.write(arr[0].name)
+        })
+        .on('end', function (err) {
+            if (err) return console.log('connection closed due to errors', err);
+
+            // console.log('end');
+            res.end()
+        });
+})
+app.get("/about/*", (req, res) => {
+    res.render("404", {
+        errorcontent: "No such page in about"
+    })
+})
+app.get("*", (req, res) => {
+    res.render("404", {
+        errorcontent: "404 error not found"
+    })
+})
+
+app.listen(80, () => {
+    console.log('successfully run on port no. 80');
+})

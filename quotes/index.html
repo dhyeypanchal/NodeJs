@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quotes</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+
+<body>
+    <div data-aos="zoom-in">
+        <h1 id="author"></h1>
+        <p id="quote"></p>
+        <button>New Quote</button>
+        <button id="tweet">Tweet Me</button>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init(); // this we use for styling.
+        let realdata = "";
+        let quotesdata = ""
+        const author = document.getElementById("author");
+        const quote = document.getElementById("quote");
+        const button = document.getElementsByTagName("button")[0];
+        const tweetMe = document.getElementById('tweet');
+
+        const tweetnow = () => {
+            let tweetpost = `https://twitter.com/intent/tweet?text=${quotesdata.author}${quotesdata.text}`
+            window.open(tweetpost)
+        }
+        const getnewquotes = () => {
+            const random = Math.floor(Math.random() * 100);
+            // console.log(realdata[random].author);
+            quotesdata = realdata[random];
+            quotesdata.author == null ?
+                (author.innerHTML = "unKnown") :
+                (author.innerHTML = `${quotesdata.author}`);
+            quote.innerHTML = `${quotesdata.text}`;
+        }
+        const getquotes = async () => {
+            const api = "https://type.fit/api/quotes";
+            try {
+                let data = await fetch(api);
+                realdata = await data.json(); // we must not define this as const as this changes everytime.
+                // console.log(jsondata[0].author);
+                button.addEventListener('click', getnewquotes)
+                tweetMe.addEventListener('click', tweetnow)
+                getnewquotes();
+            } catch (error) { }
+        }
+        getquotes();
+    </script>
+</body>
+</html>

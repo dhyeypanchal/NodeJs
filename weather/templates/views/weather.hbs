@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    {{>headerlinks}}
+</head>
+
+<body>
+    {{>nav}}
+    <h1>This is weather page</h1>
+    <div class="container">
+        <input type="text" id="city" placeholder="Enter your city">
+        <input type="submit" id="button" value="Submit">
+    </div>
+    <div id="cityname"></div>
+    <div id="temp"></div>
+    {{>footer}}
+</body>
+
+</html>
